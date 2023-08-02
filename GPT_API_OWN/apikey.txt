@@ -1,0 +1,2 @@
+openai.api_key = "sk-2EfkISU4b1fx8AFYgxW9XSR7b4NpjaJA7eAidM2RgiQ6aQsz"
+openai.api_base = "https://api.chatanywhere.cn/v1"
