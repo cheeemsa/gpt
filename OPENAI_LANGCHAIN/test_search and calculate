@@ -1,0 +1,40 @@
+import os
+from langchain import OpenAI
+from langchain.utilities import PythonREPL
+from langchain.agents import AgentType
+os.environ["OPENAI_API_KEY"] = "sk-kcfJcDXKztSEuMxaSqVjvuniMFIlz8HSr2xApuxivkNINiEc" #当前key为内测key，内测结束后会失效，在群里会针对性的发放新key
+os.environ["OPENAI_API_BASE"] = "https://key.langchain.com.cn/v1"
+os.environ["OPENAI_API_PREFIX"] = "https://key.langchain.com.cn"
+from langchain.llms import openai
+from langchain.agents import initialize_agent,Tool
+from langchain import   SerpAPIWrapper
+openai.api_key = os.getenv("OPENAI_API_KEY")
+llm=OpenAI(temperature=0)
+search = SerpAPIWrapper(serpapi_api_key = "b2bc793ca31e17a04c0116250af75dfff70f50dc0d38dae967586a23d80a5259")
+tools  = [
+    Tool(
+        name = "Search",
+        func=search.run,
+        description="useful for when you need to answer questions about current events. You should ask targeted questions"
+    ),
+
+    # You can create the tool to pass to an agent
+     Tool(
+    name="python_repl",
+    description="A Python shell. Use this to calculate. ",
+    func=PythonREPL.run
+    
+)
+
+
+
+]
+agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+
+
+while True:
+    user_input = input("User: ")
+    if user_input.lower() in ['exit', 'quit', 'stop']:
+        break
+    assistant_response = agent.run(user_input)
+    print("Assistant:", assistant_response)
